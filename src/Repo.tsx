@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 interface RepoData {
   name: string;
   author: string;
@@ -20,8 +22,23 @@ const Repo = () => {
     );
     if (response.ok) {
       const data = await response.json();
-      console.log(`data`, data);
-    } 
+      const { name, owner, stargazers_count, forks } = data;
+      const avatar = owner?.avatar_url || "";
+      const score = stargazers_count + 2 * forks;
+      const popular = score >= 500;
+      setRepoData({
+        name,
+        author: owner?.login || "",
+        stars: stargazers_count,
+        forks,
+        avatar,
+        popular
+      });
+      setNoRes(false)
+    } else {
+      setRepoData(null);
+      setNoRes(true)
+    }
   };
 
 };
